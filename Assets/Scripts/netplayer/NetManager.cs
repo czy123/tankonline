@@ -60,7 +60,9 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			
+			string[] pos_array = data.data["postion"].str.Split(',');
+			Vector3 pos = new Vector3(pos_array[0],pos_array[1],pos_array[2]);
+			GameObject.Find("enemy").GetComponent<Complete.TankMovement>().enemyTankMove(pos);
 			Debug.Log(data.data);
 		}
 	}
@@ -69,7 +71,7 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			
+			GameObject.Find("enemy").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["name"].str));
 			Debug.Log(data.data);
 		}
 	}
