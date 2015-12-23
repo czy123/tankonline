@@ -25,7 +25,6 @@ public class NetManager : MonoBehaviour {
 		socket.On("new user",NewUserCallback);
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
 		ReciveOtherTank();
-
 	}
 	#region MyTankInfo
 	public void SendMyInfo(Dictionary<string,string> data)
