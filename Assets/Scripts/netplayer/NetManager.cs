@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using SocketIO;
 
+// Analysis disable once CheckNamespace
 public class NetManager : MonoBehaviour {
 	public static NetManager instance;
 	private SocketIOComponent socket;
@@ -24,6 +25,10 @@ public class NetManager : MonoBehaviour {
 		socket = go.GetComponent<SocketIOComponent>();
 		socket.On("new user",NewUserCallback);
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
+
+		//用户退出
+		socket.On("exit user",(obj)=>Debug.Log(obj.data));
+
 		ReciveOtherTank();
 	}
 	#region MyTankInfo
@@ -38,10 +43,11 @@ public class NetManager : MonoBehaviour {
 		socket.Emit("rotation",new JSONObject(data));
 	}
 
-	public void SendFireInfo(Dictionary<string,string> data)
+	public void SendFireInfo()
 	{
-		socket.Emit("SendFireInfo",new JSONObject(data));
+		socket.Emit("SendFireInfo");
 	}
+
 	#endregion
 
 	#region othertank
@@ -51,7 +57,9 @@ public class NetManager : MonoBehaviour {
 
 		socket.On("PlayerRotato",PlayerRotato);
 
-		socket.On ("ReciveFirePos", (SocketIOEvent obj)=>Debug.Log("movemove"));
+		socket.On ("ReciveFire", (SocketIOEvent obj)=>{Debug.Log("shoot");
+			GameObject.Find("enemytank").GetComponent<Complete.TankShooting>().EnemyFire();
+		});
 	}
 	#endregion 
 
@@ -59,10 +67,9 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			string[] pos_array = data.data["postion"].str.Split(',');
+			string[] pos_array = data.data["Position"].str.Split(',');
 			Vector3 pos = new Vector3(float.Parse(pos_array[0]) ,float.Parse(pos_array[1]),float.Parse(pos_array[2]));
-			GameObject.Find("enemy").GetComponent<Complete.TankMovement>().enemyTankMove(pos);
-			Debug.Log(data.data);
+			GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankMove(pos);
 		}
 	}
 
@@ -70,8 +77,11 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			GameObject.Find("enemy").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["name"].str));
-			Debug.Log(data.data);
+			if(GameObject.Find("enemytank").transform.localRotation.y.ToString()!= data.data["Positiony"].str)
+			{
+				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
+				Debug.Log(data.data);
+			}
 		}
 	}
 

@@ -91,10 +91,11 @@ namespace Complete
 		{
 			
 			// Make this into a rotation in the y axis.
-            Quaternion turnRotation = Quaternion.Euler (0f, y, 0f);
+			Quaternion turnRotation = Quaternion.Euler(new Vector3(0f, y, 0f));
 
             // Apply this rotation to the rigidbody's rotation.
-            m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
+//			transform.localRotation = Quaternion.Euler(new Vector3(0f, y, 0f));
+			m_Rigidbody.MoveRotation (turnRotation);
 		}
 
 
