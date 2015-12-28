@@ -74,10 +74,7 @@ namespace Complete
 				NetManager.instance.SendMyInfo(data);
 	            EngineAudio ();
 
-	            var datay = new Dictionary<string,string>();
-				datay["name"] = NetManager.myname;
-				datay["y"] = transform.rotation.y.ToString();
-	            NetManager.instance.SendMyTankRotato(datay);
+	       
         	}
         }
 
@@ -87,15 +84,14 @@ namespace Complete
 			m_Rigidbody.MovePosition(pos);
 		} 
 
-		public void enemyTankRotato(float y)
+		public void enemyTankRotato(float turn)
 		{
 			
 			// Make this into a rotation in the y axis.
-			Quaternion turnRotation = Quaternion.Euler(new Vector3(0f, y, 0f));
+            Quaternion turnRotation = Quaternion.Euler (0f, turn, 0f);
 
             // Apply this rotation to the rigidbody's rotation.
-//			transform.localRotation = Quaternion.Euler(new Vector3(0f, y, 0f));
-			m_Rigidbody.MoveRotation (turnRotation);
+            m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
 		}
 
 
@@ -149,6 +145,11 @@ namespace Complete
         {
             // Determine the number of degrees to be turned based on the input, speed and time between frames.
             float turn = m_TurnInputValue * m_TurnSpeed * Time.deltaTime;
+
+			var datay = new Dictionary<string,string>();
+				datay["name"] = NetManager.myname;
+				datay["y"] = turn.ToString();
+	            NetManager.instance.SendMyTankRotato(datay);
 
             // Make this into a rotation in the y axis.
             Quaternion turnRotation = Quaternion.Euler (0f, turn, 0f);
