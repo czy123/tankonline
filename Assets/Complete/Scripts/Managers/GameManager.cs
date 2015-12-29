@@ -14,6 +14,7 @@ namespace Complete
         public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
         public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
         public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
+		public GameObject entername;				//输入框
 
         
         private int m_RoundNumber;                  // Which round the game is currently on.
@@ -36,6 +37,12 @@ namespace Complete
             // Once the tanks have been created and the camera is using them as targets, start the game.
 //            StartCoroutine (GameLoop ());
         }
+
+        public void HideUI ()
+		{
+			entername.SetActive (false);
+			m_MessageText.gameObject.SetActive (false);
+		}
 
 
         public void SpawnAllTanks(bool mytank )

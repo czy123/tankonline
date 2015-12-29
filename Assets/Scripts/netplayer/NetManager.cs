@@ -87,10 +87,11 @@ public class NetManager : MonoBehaviour {
 
 	 void NewUserCallback(SocketIOEvent data)
 	{
-		string A = data.data["name"].str;
+		
+		bool A = data.data["enemy"].b;
 		Debug.Log(data.data +"+"+myname.ToString()+"+"+A );
 		TankInfo info = new TankInfo(){name = data.data["name"].ToString(),color = data.data["color"].ToString()};
-		if(A != myname)
+		if(A != false)
 		{
 			Debug.Log("enter game");
 
@@ -98,6 +99,7 @@ public class NetManager : MonoBehaviour {
 		}
 		else
 		{
+			Complete.GameManager.instance.HideUI ();
 			if(GameObject.Find(data.data["name"].str) == null)
 			{
 				InitTank(info,true);
