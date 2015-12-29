@@ -48,6 +48,11 @@ public class NetManager : MonoBehaviour {
 		socket.Emit("SendFireInfo");
 	}
 
+	public void Sendtanklife (Dictionary<string,string> data)
+	{
+		socket.Emit ("ReciveLife",new JSONObject(data));
+	}
+
 	#endregion
 
 	#region othertank
@@ -59,6 +64,18 @@ public class NetManager : MonoBehaviour {
 
 		socket.On ("ReciveFire", (SocketIOEvent obj)=>{Debug.Log("shoot");
 			GameObject.Find("enemytank").GetComponent<Complete.TankShooting>().EnemyFire();
+		});
+
+		socket.On ("enemylife",(SocketIOEvent obj)=>{Debug.Log("life");
+			Debug.Log (obj.data["damagelife"].b);
+			if(obj.data["damagelife"].b)
+			{
+				GameObject.Find(myname).GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
+			}
+			else
+			{
+				GameObject.Find("enemytank").GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
+			}
 		});
 	}
 	#endregion 
@@ -111,16 +128,7 @@ public class NetManager : MonoBehaviour {
 	void InitTank(TankInfo data,bool mytank)
 	{
 		Debug.Log("creat tank");
-		Complete.GameManager.instance.SpawnAllTanks(mytank);
-//		m_Tanks.m_Instance =
-//                    Instantiate(m_TankPrefab, m_Tanks.m_SpawnPoint.position, m_Tanks.m_SpawnPoint.rotation) as GameObject;
-//                m_Tanks.m_PlayerNumber = i + 1;
-//                m_Tanks.Setup();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		Complete.GameManager.instance.SpawnAllTanks(mytank,data);
 	}
 
 	public void SureName()

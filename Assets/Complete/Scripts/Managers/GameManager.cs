@@ -45,7 +45,7 @@ namespace Complete
 		}
 
 
-        public void SpawnAllTanks(bool mytank )
+        public void SpawnAllTanks(bool mytank ,TankInfo info)
         {
 		
             // For all the tanks...
@@ -68,6 +68,7 @@ namespace Complete
 				{
 					m_Tanks[i].m_Instance.name = "enemytank";
 				}
+				m_Tanks[i].m_Instance.GetComponent <Complete.TankHealth>().TankName.text = info.name;
 				m_Tanks[i].Setup();
             }
 			
