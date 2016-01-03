@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using SocketIO;
 
+// Analysis disable once CheckNamespace
 public class NetManager : MonoBehaviour {
 	public static NetManager instance;
 	private SocketIOComponent socket;
@@ -24,8 +25,11 @@ public class NetManager : MonoBehaviour {
 		socket = go.GetComponent<SocketIOComponent>();
 		socket.On("new user",NewUserCallback);
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
-		ReciveOtherTank();
 
+		//用户退出
+		socket.On("exit user",(obj)=>Debug.Log(obj.data));
+
+		ReciveOtherTank();
 	}
 	#region MyTankInfo
 	public void SendMyInfo(Dictionary<string,string> data)
@@ -39,10 +43,16 @@ public class NetManager : MonoBehaviour {
 		socket.Emit("rotation",new JSONObject(data));
 	}
 
-	public void SendFireInfo(Dictionary<string,string> data)
+	public void SendFireInfo()
 	{
-		socket.Emit("SendFireInfo",new JSONObject(data));
+		socket.Emit("SendFireInfo");
 	}
+
+	public void Sendtanklife (Dictionary<string,string> data)
+	{
+		socket.Emit ("ReciveLife",new JSONObject(data));
+	}
+
 	#endregion
 
 	#region othertank
@@ -52,7 +62,21 @@ public class NetManager : MonoBehaviour {
 
 		socket.On("PlayerRotato",PlayerRotato);
 
-		socket.On ("ReciveFirePos", (SocketIOEvent obj)=>Debug.Log("movemove"));
+		socket.On ("ReciveFire", (SocketIOEvent obj)=>{Debug.Log("shoot");
+			GameObject.Find("enemytank").GetComponent<Complete.TankShooting>().EnemyFire();
+		});
+
+		socket.On ("enemylife",(SocketIOEvent obj)=>{Debug.Log("life");
+			Debug.Log (obj.data["damagelife"].b);
+			if(obj.data["damagelife"].b)
+			{
+				GameObject.Find(myname).GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
+			}
+			else
+			{
+				GameObject.Find("enemytank").GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
+			}
+		});
 	}
 	#endregion 
 
@@ -60,8 +84,9 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			
-			Debug.Log(data.data);
+			string[] pos_array = data.data["Position"].str.Split(',');
+			Vector3 pos = new Vector3(float.Parse(pos_array[0]) ,float.Parse(pos_array[1]),float.Parse(pos_array[2]));
+			GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankMove(pos);
 		}
 	}
 
@@ -69,17 +94,21 @@ public class NetManager : MonoBehaviour {
 	{
 		if(data.data["name"].str != myname)
 		{
-			
-			Debug.Log(data.data);
+			if(GameObject.Find("enemytank").transform.localRotation.y.ToString()!= data.data["Positiony"].str)
+			{
+				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
+				Debug.Log(data.data);
+			}
 		}
 	}
 
 	 void NewUserCallback(SocketIOEvent data)
 	{
-		string A = data.data["name"].str;
+		
+		bool A = data.data["enemy"].b;
 		Debug.Log(data.data +"+"+myname.ToString()+"+"+A );
 		TankInfo info = new TankInfo(){name = data.data["name"].ToString(),color = data.data["color"].ToString()};
-		if(A != myname)
+		if(A != false)
 		{
 			Debug.Log("enter game");
 
@@ -87,6 +116,7 @@ public class NetManager : MonoBehaviour {
 		}
 		else
 		{
+			Complete.GameManager.instance.HideUI ();
 			if(GameObject.Find(data.data["name"].str) == null)
 			{
 				InitTank(info,true);
@@ -98,16 +128,7 @@ public class NetManager : MonoBehaviour {
 	void InitTank(TankInfo data,bool mytank)
 	{
 		Debug.Log("creat tank");
-		Complete.GameManager.instance.SpawnAllTanks(mytank);
-//		m_Tanks.m_Instance =
-//                    Instantiate(m_TankPrefab, m_Tanks.m_SpawnPoint.position, m_Tanks.m_SpawnPoint.rotation) as GameObject;
-//                m_Tanks.m_PlayerNumber = i + 1;
-//                m_Tanks.Setup();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		Complete.GameManager.instance.SpawnAllTanks(mytank,data);
 	}
 
 	public void SureName()

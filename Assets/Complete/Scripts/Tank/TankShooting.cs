@@ -52,6 +52,8 @@ namespace Complete
                 // ... use the max force and launch the shell.
                 m_CurrentLaunchForce = m_MaxLaunchForce;
                 Fire ();
+
+
             }
             // Otherwise, if the fire button has just started being pressed...
             else if (Input.GetButtonDown (m_FireButton))
@@ -83,6 +85,36 @@ namespace Complete
 
         private void Fire ()
         {
+
+			Debug.Log(GetComponent<TankMovement>().ismytank);
+			if(!GetComponent<TankMovement>().ismytank)
+        	{
+        		return;
+        	}
+			//发射导弹发送服务器
+			NetManager.instance.SendFireInfo();
+
+            // Set the fired flag so only Fire is only called once.
+            m_Fired = true;
+
+            // Create an instance of the shell and store a reference to it's rigidbody.
+            Rigidbody shellInstance =
+                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+            // Set the shell's velocity to the launch force in the fire position's forward direction.
+            shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
+
+            // Change the clip to the firing clip and play it.
+            m_ShootingAudio.clip = m_FireClip;
+            m_ShootingAudio.Play ();
+
+            // Reset the launch force.  This is a precaution in case of missing button events.
+            m_CurrentLaunchForce = m_MinLaunchForce;
+        }
+
+		public void EnemyFire ()
+        {
+
             // Set the fired flag so only Fire is only called once.
             m_Fired = true;
 

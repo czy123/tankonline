@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Complete
 {
@@ -11,7 +12,7 @@ namespace Complete
         public Color m_FullHealthColor = Color.green;       // The color the health bar will be when on full health.
         public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
         public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
-        
+        public Text TankName;								//tank name
         
         private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
         private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
@@ -45,6 +46,13 @@ namespace Complete
 
         public void TakeDamage (float amount)
         {
+			Debug.Log (amount);
+            //emitlife
+			var data  =new Dictionary<string,string>();
+			data["ismytank"] = GetComponent <Complete.TankMovement>().ismytank.ToString();
+			data["damagelife"] = amount.ToString ();
+			NetManager.instance.Sendtanklife(data);
+
             // Reduce current health by the amount of damage done.
             m_CurrentHealth -= amount;
 
@@ -87,5 +95,10 @@ namespace Complete
             // Turn the tank off.
             gameObject.SetActive (false);
         }
+
+		private void FixedUpdate ()
+		{
+//			TankName.transform.LookAt (Camera.main.transform.localPosition);
+		}
     }
 }

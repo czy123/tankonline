@@ -14,6 +14,7 @@ namespace Complete
         public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
         public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
         public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
+		public GameObject entername;				//输入框
 
         
         private int m_RoundNumber;                  // Which round the game is currently on.
@@ -37,8 +38,14 @@ namespace Complete
 //            StartCoroutine (GameLoop ());
         }
 
+        public void HideUI ()
+		{
+			entername.SetActive (false);
+			m_MessageText.gameObject.SetActive (false);
+		}
 
-        public void SpawnAllTanks(bool mytank )
+
+        public void SpawnAllTanks(bool mytank ,TankInfo info)
         {
 		
             // For all the tanks...
@@ -48,7 +55,7 @@ namespace Complete
                 m_Tanks[i].m_Instance =
                     Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
                 m_Tanks[i].m_PlayerNumber = i + 1;
-              
+              	
 				m_Tanks[i].ismytank = mytank;
 				Debug.Log(m_Tanks[i].ismytank);
 				if(m_Tanks[i].ismytank)
@@ -61,6 +68,7 @@ namespace Complete
 				{
 					m_Tanks[i].m_Instance.name = "enemytank";
 				}
+				m_Tanks[i].m_Instance.GetComponent <Complete.TankHealth>().TankName.text = info.name;
 				m_Tanks[i].Setup();
             }
 			
