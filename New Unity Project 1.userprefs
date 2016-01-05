@@ -1,16 +1,9 @@
 ﻿<Properties RefactoringSettings.EnableRefactorings="True" StartupItem="Assembly-CSharp-firstpass.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Complete/Scripts/Tank/TankShooting.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/netplayer/StartPage.cs">
     <Files>
-      <File FileName="Assets/Scripts/netplayer/NetManager.cs" Line="52" Column="3" />
-      <File FileName="Assets/Complete/Scripts/Tank/TankMovement.cs" Line="126" Column="6" />
-      <File FileName="Assets/Complete/Scripts/Tank/TankShooting.cs" Line="1" Column="1" />
-      <File FileName="Assets/Complete/Scripts/Managers/TankManager.cs" Line="28" Column="11" />
-      <File FileName="Assets/SocketIO/Scripts/Test/TestSocketIO.cs" Line="1" Column="1" />
-      <File FileName="Assets/Complete/Scripts/Camera/CameraControl.cs" Line="1" Column="1" />
-      <File FileName="Assets/SocketIO/JSONObject/JSONObject.cs" Line="1" Column="1" />
-      <File FileName="Assets/Complete/Scripts/Tank/TankHealth.cs" Line="48" Column="25" />
-      <File FileName="Assets/Complete/Scripts/Shell/ShellExplosion.cs" Line="54" Column="5" />
+      <File FileName="Assets/Scripts/Tank/SetTankpProperty.cs" Line="21" Column="32" />
+      <File FileName="Assets/Scripts/netplayer/StartPage.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
