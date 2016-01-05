@@ -15,6 +15,6 @@ public class StartPage : MonoBehaviour {
 
 	public void StartGame()
 	{
-		Application.LoadLevel ("selectpage");
+		Application.LoadLevelAsync ("selectpage");
 	}
 }
