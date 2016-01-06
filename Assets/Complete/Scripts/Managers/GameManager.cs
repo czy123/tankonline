@@ -23,10 +23,14 @@ namespace Complete
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
 
+        void Awake ()
+		{
+			instance = this;
+		}
 
         private void Start()
         {
-			instance = this;
+			
             // Create the delays so they only have to be made once.
             m_StartWait = new WaitForSeconds (m_StartDelay);
             m_EndWait = new WaitForSeconds (m_EndDelay);
@@ -45,29 +49,38 @@ namespace Complete
 		}
 
 
-        public void SpawnAllTanks(bool mytank ,TankInfo info)
-        {
+        public void SpawnAllTanks (bool mytank, TankInfo info)
+		{
 		
-            // For all the tanks...
-            for (int i = 0; i < m_Tanks.Length; i++)
-            {
-                // ... create them, set their player number and references needed for control.
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-                m_Tanks[i].m_PlayerNumber = i + 1;
+			// For all the tanks...
+			for (int i = 0; i < m_Tanks.Length; i++) {
+				// ... create them, set their player number and references needed for control.
+				m_Tanks [i].m_Instance =
+                    Instantiate (m_TankPrefab, m_Tanks [i].m_SpawnPoint.position, m_Tanks [i].m_SpawnPoint.rotation) as GameObject;
+				m_Tanks [i].m_PlayerNumber = i + 1;
               	
-				m_Tanks[i].ismytank = mytank;
-				Debug.Log(m_Tanks[i].ismytank);
-				if(m_Tanks[i].ismytank)
-				{
-					Debug.Log("SpawnAllTanks");
-					m_Tanks[i].m_Instance.name = NetManager.myname;
+				m_Tanks [i].ismytank = mytank;
+				Debug.Log (m_Tanks [i].ismytank+"+"+info.color);
+				if (m_Tanks [i].ismytank) {
+					Debug.Log ("SpawnAllTanks");
+					m_Tanks [i].m_Instance.name = NetManager.myname;
 					SetCameraTargets();
 				}
 				else
 				{
 					m_Tanks[i].m_Instance.name = "enemytank";
 				}
+				switch (info.color) {
+					case "blue":
+						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.blue;
+						break;
+					case "black":
+						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.black;
+						break;
+					case "red":
+						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.red;
+						break;
+					}
 				m_Tanks[i].m_Instance.GetComponent <Complete.TankHealth>().TankName.text = info.name;
 				m_Tanks[i].Setup();
             }
