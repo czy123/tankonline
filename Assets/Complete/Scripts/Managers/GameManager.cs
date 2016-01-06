@@ -63,7 +63,7 @@ namespace Complete
 				Debug.Log (m_Tanks [i].ismytank+"+"+info.color);
 				if (m_Tanks [i].ismytank) {
 					Debug.Log ("SpawnAllTanks");
-					m_Tanks [i].m_Instance.name = NetManager.myname;
+					m_Tanks [i].m_Instance.name = info.name;
 					SetCameraTargets();
 				}
 				else

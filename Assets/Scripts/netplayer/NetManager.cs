@@ -20,22 +20,42 @@ public class NetManager : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		
-		GameObject go = GameObject.Find("SocketIO");
-		socket = go.GetComponent<SocketIOComponent>();
+		GameObject go =  GameObject.Find ("SocketIO");
+		socket = go.GetComponent<SocketIOComponent> ();
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
 
 		//用户退出
-		socket.On("exit user",(obj)=>Debug.Log(obj.data));
-		InitTank(GameData.instance.Mytankinfo,true);
-		socket.On("new user",NewUserCallback);
+		socket.On ("exit user", (obj) => Debug.Log (obj.data));
+
+
+		socket.On("new user",(data) =>{
+			Debug.Log (data.data["enemy"].b);
+//			bool A = data.data ["enemy"].b;
+			TankInfo info = new TankInfo (){ name = data.data ["name"].str, color = data.data ["color"].str };
+
+			if (data.data["enemy"].b == false) {
+				myname = info.name;
+				GameData.instance.Mytankinfo = info;
+				Debug.Log (GameData.instance.Mytankinfo.name + "+" + info.color);
+				Application.LoadLevelAsync ("g1");
+			
+			} else {
+				if (TankDataSet.instance != null) {
+					TankDataSet.instance.InitTank (info, false);
+				} else {
+					GameData.instance.Emenytank = info;
+				}
+			}
+		});
 		ReciveOtherTank();
 	}
+
 	#region MyTankInfo
 	public void SendMyInfo(Dictionary<string,string> data)
 	{
-		
 		socket.Emit("move",new JSONObject(data));
 	}
 
@@ -52,6 +72,13 @@ public class NetManager : MonoBehaviour {
 	public void Sendtanklife (Dictionary<string,string> data)
 	{
 		socket.Emit ("ReciveLife",new JSONObject(data));
+	}
+
+
+	public void CreateMytank(Dictionary<string, string> data)
+	{
+		Debug.Log ("create player");
+		socket.Emit("create player",new JSONObject(data));
 	}
 
 	#endregion
@@ -81,8 +108,11 @@ public class NetManager : MonoBehaviour {
 	}
 	#endregion 
 
-	void PlayerMove(SocketIOEvent data)
+	void PlayerMove (SocketIOEvent data)
 	{
+		if (TankDataSet.instance == null) {
+			return;
+		}
 		if(data.data["name"].str != myname)
 		{
 			string[] pos_array = data.data["Position"].str.Split(',');
@@ -93,6 +123,10 @@ public class NetManager : MonoBehaviour {
 
 	void PlayerRotato(SocketIOEvent data)
 	{
+		if (TankDataSet.instance == null) {
+			return;
+		}
+
 		if(data.data["name"].str != myname)
 		{
 			if(GameObject.Find("enemytank").transform.localRotation.y.ToString()!= data.data["Positiony"].str)
@@ -106,43 +140,28 @@ public class NetManager : MonoBehaviour {
 	 void NewUserCallback(SocketIOEvent data)
 	{
 		
-		bool A = data.data["enemy"].b;
-		Debug.Log(data.data +"+"+myname.ToString()+"+"+A );
-		TankInfo info = new TankInfo(){name = data.data["name"].ToString(),color = data.data["color"].ToString()};
-		if(A != false)
-		{
-			Debug.Log("enter game");
+		bool A = data.data ["enemy"].b;
+		Debug.Log (data.data + "+" + myname.ToString () + "+" + A);
+		TankInfo info = new TankInfo (){ name = data.data ["name"].str, color = data.data ["color"].str };
 
-			InitTank(info,false);
-		}
-		else
-		{
-			Complete.GameManager.instance.HideUI ();
-			if(GameObject.Find(data.data["name"].str) == null)
-			{
-				InitTank(info,true);
+		if (A == false) {
+			myname = info.name;
+			GameData.instance.Mytankinfo = info;
+			Debug.Log (GameData.instance.Mytankinfo.name + "+" + info.color);
+			Application.LoadLevelAsync ("g1");
+		
+		} else {
+			if (TankDataSet.instance != null) {
+				TankDataSet.instance.InitTank (info, false);
+			} else {
+				GameData.instance.Emenytank = info;
 			}
 		}
 	}
 
 	const int i =0;
-	void InitTank(TankInfo data,bool mytank)
-	{
-		Debug.Log("creat tank"+mytank+"+"+data+"+"+Complete.GameManager.instance);
-		Complete.GameManager.instance.SpawnAllTanks(mytank,data);
-	}
 
-	public void SureName()
-	{
-		if(string.IsNullOrEmpty(myname))
-		{
-			myname = uiinput.text;
-			var data = new Dictionary<string, string> ();
-				data["name"] =  uiinput.text;
-				data ["color"] = "1";
-			socket.Emit("create player",new JSONObject(data));
-		}
-	}
+
 }
 
 public class TankInfo

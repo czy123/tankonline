@@ -22,4 +22,14 @@ public class GameData : MonoBehaviour {
 			mytankinfo = value;
 		}
 	}
+
+	private TankInfo emenytank = new TankInfo();
+	public TankInfo Emenytank {
+		get {
+			return emenytank;
+		}
+		set {
+			emenytank = value;
+		}
+	}
 }

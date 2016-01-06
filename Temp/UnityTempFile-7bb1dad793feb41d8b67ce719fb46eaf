@@ -92,6 +92,7 @@
 'Assets/GUI Effects/Scripts/Other Scripts/WidthResize.cs'
 'Assets/Scripts/Camera/CameraControl.cs'
 'Assets/Scripts/Common/GameData.cs'
+'Assets/Scripts/Common/TankDataSet.cs'
 'Assets/Scripts/Managers/GameManager.cs'
 'Assets/Scripts/Managers/TankManager.cs'
 'Assets/Scripts/Shell/ShellExplosion.cs'
