@@ -24,7 +24,6 @@ public class NetManager : MonoBehaviour {
 		
 		GameObject go = GameObject.Find("SocketIO");
 		socket = go.GetComponent<SocketIOComponent>();
-	
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
 
 		//用户退出
