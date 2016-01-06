@@ -60,7 +60,7 @@ public class SetTankpProperty : MonoBehaviour {
 		
 		bool A = data.data["enemy"].b;
 		Debug.Log(data.data +"+"+myname.ToString()+"+"+A );
-		TankInfo info = new TankInfo(){name = data.data["name"].ToString(),color = data.data["color"].ToString()};
+		TankInfo info = new TankInfo(){name = data.data["name"].ToString(),color = data.data["color"].str};
 
 		if(A == false)
 		{
