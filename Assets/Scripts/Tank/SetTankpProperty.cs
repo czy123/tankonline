@@ -67,6 +67,7 @@ public class SetTankpProperty : MonoBehaviour {
 			GameData.instance.Mytankinfo = info;
 			Debug.Log (GameData.instance.Mytankinfo.name+"+"+info.color);
 			Application.LoadLevelAsync ("g1");
+			socket.Off ("new user",NewUserCallback);
 		}
 	}
 }
