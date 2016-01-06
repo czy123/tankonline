@@ -21,14 +21,16 @@ public class NetManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		
 		GameObject go = GameObject.Find("SocketIO");
 		socket = go.GetComponent<SocketIOComponent>();
-		socket.On("new user",NewUserCallback);
+	
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
 
 		//用户退出
 		socket.On("exit user",(obj)=>Debug.Log(obj.data));
-
+		InitTank(GameData.instance.Mytankinfo,true);
+		socket.On("new user",NewUserCallback);
 		ReciveOtherTank();
 	}
 	#region MyTankInfo
@@ -127,7 +129,7 @@ public class NetManager : MonoBehaviour {
 	const int i =0;
 	void InitTank(TankInfo data,bool mytank)
 	{
-		Debug.Log("creat tank");
+		Debug.Log("creat tank"+mytank+"+"+data+"+"+Complete.GameManager.instance);
 		Complete.GameManager.instance.SpawnAllTanks(mytank,data);
 	}
 
