@@ -56,6 +56,8 @@ namespace Complete
 			m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 		}
 
+		[HideInInspector]
+		public bool Getbtn;
 
 		private void Update ()
 		{
@@ -75,8 +77,11 @@ namespace Complete
 				Down ();
 			}
             // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
-            else if (Input.GetButton (m_FireButton) && !m_Fired) {
-				Press ();
+			else if ((Input.GetButton (m_FireButton) || Getbtn) && !m_Fired) {
+				// Increment the launch force and update the slider.
+
+				m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+				m_AimSlider.value = m_CurrentLaunchForce;
 			}
             // Otherwise, if the fire button is released and the shell hasn't been launched yet...
             else if (Input.GetButtonUp (m_FireButton) && !m_Fired) {
@@ -96,13 +101,6 @@ namespace Complete
 			m_ShootingAudio.Play ();
 		}
 
-		public void Press ()
-		{
-			// Increment the launch force and update the slider.
-			m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
-
-			m_AimSlider.value = m_CurrentLaunchForce;
-		}
 
 		public void Fire ()
 		{
@@ -123,7 +121,7 @@ namespace Complete
 
 			// Set the shell's velocity to the launch force in the fire position's forward direction.
 			shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
-			;
+
 
 			// Change the clip to the firing clip and play it.
 			m_ShootingAudio.clip = m_FireClip;

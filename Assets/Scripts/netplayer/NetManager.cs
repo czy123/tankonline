@@ -95,9 +95,10 @@ public class NetManager : MonoBehaviour {
 		});
 
 		socket.On ("enemylife",(SocketIOEvent obj)=>{Debug.Log("life");
-			Debug.Log (obj.data["damagelife"].b);
-			if(obj.data["damagelife"].b)
-			{
+			Debug.Log (obj.data);
+			if(obj.data["tankname"].str == myname)
+			{	
+				
 				GameObject.Find(myname).GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
 			}
 			else
@@ -131,7 +132,7 @@ public class NetManager : MonoBehaviour {
 		{
 			if(GameObject.Find("enemytank").transform.localRotation.y.ToString()!= data.data["Positiony"].str)
 			{
-				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
+//				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
 				Debug.Log(data.data);
 			}
 		}

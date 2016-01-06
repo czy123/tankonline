@@ -15,7 +15,7 @@ public class EasyTouchManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Time.frameCount % 5 == 0 && null != Target && null != etcJoy
+		if (null != Target && null != etcJoy
 		    && (null == etcJoy.axisX.directTransform || null == etcJoy.axisY.directTransform)) {
 
 			etcJoy.axisX.directTransform = Target;
@@ -28,7 +28,9 @@ public class EasyTouchManager : MonoBehaviour
 				tankShoot.Down ();
 			}
 			if (ETCInput.GetButton ("Fire") && !tankShoot.m_Fired) {
-				tankShoot.Press ();
+				tankShoot.Getbtn = true;
+			} else {
+				tankShoot.Getbtn = false;
 			}
 			if (ETCInput.GetButtonUp ("Fire") && !tankShoot.m_Fired) {
 				tankShoot.Fire ();

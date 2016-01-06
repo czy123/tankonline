@@ -49,7 +49,7 @@ namespace Complete
 			Debug.Log (amount);
             //emitlife
 			var data  =new Dictionary<string,string>();
-			data["ismytank"] = GetComponent <Complete.TankMovement>().ismytank.ToString();
+			data["tankname"] = transform.name;
 			data["damagelife"] = amount.ToString ();
 			NetManager.instance.Sendtanklife(data);
 
