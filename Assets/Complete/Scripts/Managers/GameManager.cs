@@ -71,17 +71,17 @@ namespace Complete
 					m_Tanks[i].m_Instance.name = "enemytank";
 				}
 				Debug.Log ("info.color"+info.color);
-				switch (info.color) {
-					case "blue":
-						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.blue;
-						break;
-					case "black":
-						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.black;
-						break;
-					case "red":
-						m_Tanks[i].m_Instance.GetComponentInChildren <Material>().color = Color.red;
-						break;
-					}
+//				switch (info.color) {
+//					case "blue":
+//						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.blue;
+//						break;
+//					case "black":
+//						m_Tanks[i].m_Instance.GetComponent<Material>().color = Color.black;
+//						break;
+//					case "red":
+//						m_Tanks[i].m_Instance.GetComponentInChildren <Material>().color = Color.red;
+//						break;
+//					}
 				m_Tanks[i].m_Instance.GetComponent <Complete.TankHealth>().TankName.text = info.name;
 				m_Tanks[i].Setup();
             }
