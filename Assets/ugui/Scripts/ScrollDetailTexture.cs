@@ -44,7 +44,7 @@ public class ScrollDetailTexture : MonoBehaviour
 
 	void Update ()
 	{
-		Material mat = (mCopy != null) ? mCopy : mOriginal;
+		Material mat = mCopy ?? mOriginal;
 
 		if (mat != null)
 		{

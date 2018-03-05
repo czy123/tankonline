@@ -28,12 +28,22 @@ public class NetManager : MonoBehaviour {
 		socket.On ("sys message", (SocketIOEvent obj) => Debug.Log (obj.data));
 
 		//用户退出
-		socket.On ("exit user", (obj) => Debug.Log (obj.data));
+		socket.On ("exit user", (obj) => {
+			Destroy (GameObject.Find("enemytank"));
+			if(TankDataSet.instance != null)
+			{
+				TankDataSet.instance.ReciveMessage(null,obj.data["name"].str+"leave");
+				TankDataSet.instance.GameOver ("Game Over!!");
+			}
+		});
 
 
 		socket.On("new user",(data) =>{
+			if(TankDataSet.instance !=null)
+			{
+				TankDataSet.instance.ReciveMessage(null,data.data["name"].str+"enter room");
+			}
 			Debug.Log (data.data["enemy"].b);
-//			bool A = data.data ["enemy"].b;
 			TankInfo info = new TankInfo (){ name = data.data ["name"].str, color = data.data ["color"].str };
 
 			if (data.data["enemy"].b == false) {
@@ -81,11 +91,24 @@ public class NetManager : MonoBehaviour {
 		socket.Emit("create player",new JSONObject(data));
 	}
 
+	public void SendChatMes(Dictionary<string,string> data)
+	{
+		socket.Emit ("Player Message",new JSONObject (data));
+	}
+
 	#endregion
 
 	#region othertank
 	void ReciveOtherTank()
 	{
+
+		socket.On ("OtherTankMessage",(data)=>{
+			if(TankDataSet.instance !=null)
+			{
+				TankDataSet.instance.ReciveMessage(data.data["name"].str,data.data["message"].str);
+			}
+		});
+ 		
 		socket.On("PlayerMove",PlayerMove);
 
 		socket.On("PlayerRotato",PlayerRotato);
@@ -95,10 +118,9 @@ public class NetManager : MonoBehaviour {
 		});
 
 		socket.On ("enemylife",(SocketIOEvent obj)=>{Debug.Log("life");
-			Debug.Log (obj.data);
-			if(obj.data["tankname"].str == myname)
+			Debug.Log ("enemylife"+obj.data);
+			if(obj.data["tankname"].str == "enemytank")
 			{	
-				
 				GameObject.Find(myname).GetComponent<Complete.TankHealth>().TakeDamage(float.Parse (obj.data["damagelife"].str));
 			}
 			else
@@ -132,8 +154,7 @@ public class NetManager : MonoBehaviour {
 		{
 			if(GameObject.Find("enemytank").transform.localRotation.y.ToString()!= data.data["Positiony"].str)
 			{
-//				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
-				Debug.Log(data.data);
+				GameObject.Find("enemytank").GetComponent<Complete.TankMovement>().enemyTankRotato(float.Parse(data.data["Positiony"].str));
 			}
 		}
 	}

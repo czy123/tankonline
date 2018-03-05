@@ -149,7 +149,7 @@ namespace Complete
 			var datay = new Dictionary<string,string>();
 				datay["name"] = NetManager.myname;
 				datay["y"] = turn.ToString();
-				Debug.Log (datay["y"]);
+//				Debug.Log (datay["y"]);
 	            NetManager.instance.SendMyTankRotato(datay);
 
             // Make this into a rotation in the y axis.
